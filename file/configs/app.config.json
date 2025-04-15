@@ -1,0 +1,23 @@
+{
+  "app" : {
+    "name": "dbo-service",
+    "version": "1.0.0",
+    "description": "DBO Service",
+    "port": 3000,
+    "log-level": "debug",
+    "is-development": true
+  },
+  "postgres": {
+    "host": "localhost",
+    "port": 5432,
+    "database": "mydatabase",
+    "username": "root",
+    "password": "root",
+    "schema": "public",
+    "ssl": "disable",
+    "max-idle-time": 3,
+    "max-life-time": 5,
+    "max-open-connections": 5,
+    "max-idle-connections": 5
+  }
+}
