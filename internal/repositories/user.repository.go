@@ -8,7 +8,7 @@ import (
 type UserRepository struct {
 }
 
-func NewUserRepository() *UserRepository {
+func NewUserRepository() UserRepositoryInterface {
 	return &UserRepository{}
 }
 
@@ -16,7 +16,7 @@ type UserRepositoryInterface interface {
 	GetUserByUsername(db *gorm.DB, username string) (*models.User, error)
 }
 
-func (u UserRepository) GetUserByUsername(db *gorm.DB, username string) (*models.User, error) {
+func (u *UserRepository) GetUserByUsername(db *gorm.DB, username string) (*models.User, error) {
 	var userData models.User
 	err := db.Where("username = ?", username).First(&userData).Error
 	return &userData, err

@@ -24,6 +24,8 @@ func NewRoute(db *gorm.DB, ctx *gin.Engine, cfg config.AppConfig, validator *val
 
 func (r *Route) RouteInit() {
 	r.userRouteInit()
+	r.customerRouteInit()
+	r.orderRouteInit()
 }
 
 func (r *Route) userRouteInit() {
@@ -34,4 +36,33 @@ func (r *Route) userRouteInit() {
 	userController := controllers.NewUserController(userService)
 	group.POST("/register", userController.Register)
 	group.POST("/login", userController.Login)
+}
+
+func (r *Route) customerRouteInit() {
+	group := r.ctx.Group("/customer")
+	genericCustomerRepo := repositories.NewRepository[models.Customer]()
+	customerService := services.NewCustomerService(genericCustomerRepo, r.validator, r.db, r.cfg)
+	customerController := controllers.NewCustomerController(customerService)
+	group.GET("/", customerController.GetAll)
+	group.GET("/:id", customerController.GetDetail)
+	group.POST("/", customerController.Create)
+	group.PUT("/:id", customerController.Update)
+	group.DELETE("/:id", customerController.Delete)
+	group.GET("/search", customerController.Search)
+}
+
+func (r *Route) orderRouteInit() {
+	group := r.ctx.Group("/order")
+	genericOrderRepo := repositories.NewRepository[models.Order]()
+	genericOrderItemRepo := repositories.NewRepository[models.OrderItem]()
+	genericCustomerRepo := repositories.NewRepository[models.Customer]()
+	orderRepo := repositories.NewOrderRepository()
+	orderService := services.NewOrderService(genericOrderRepo, genericOrderItemRepo, genericCustomerRepo, orderRepo, r.validator, r.db, r.cfg)
+	orderController := controllers.NewOrderController(orderService)
+	group.GET("/", orderController.GetAll)
+	group.GET("/:id", orderController.GetDetail)
+	group.POST("/", orderController.Create)
+	group.PUT("/:id", orderController.Update)
+	group.DELETE("/:id", orderController.Delete)
+
 }

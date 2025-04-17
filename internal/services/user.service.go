@@ -22,7 +22,7 @@ type UserService struct {
 	cfg       config.AppConfig
 }
 
-func NewUserService(repo repositories.RepositoryImpl[models.User], repoUser repositories.UserRepositoryInterface, validator *validator.Validate, db *gorm.DB, cfg config.AppConfig) *UserService {
+func NewUserService(repo repositories.RepositoryImpl[models.User], repoUser repositories.UserRepositoryInterface, validator *validator.Validate, db *gorm.DB, cfg config.AppConfig) UserServiceInterface {
 	return &UserService{repo: repo, repoUser: repoUser, validator: validator, db: db, cfg: cfg}
 }
 
@@ -31,7 +31,7 @@ type UserServiceInterface interface {
 	Register(ctx context.Context, payload models.RegisterRequest) error
 }
 
-func (u UserService) Login(ctx context.Context, payload models.LoginRequest) (*models.LoginResponse, error) {
+func (u *UserService) Login(ctx context.Context, payload models.LoginRequest) (*models.LoginResponse, error) {
 	err := utils.ValidateStruct(payload, u.validator)
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (u UserService) Login(ctx context.Context, payload models.LoginRequest) (*m
 
 }
 
-func (u UserService) Register(ctx context.Context, payload models.RegisterRequest) error {
+func (u *UserService) Register(ctx context.Context, payload models.RegisterRequest) error {
 	// validation struct
 	err := utils.ValidateStruct(payload, u.validator)
 	if err != nil {
@@ -100,7 +100,7 @@ func (u UserService) Register(ctx context.Context, payload models.RegisterReques
 	return nil
 }
 
-func (u UserService) checkUsernameExists(db *gorm.DB, username string) error {
+func (u *UserService) checkUsernameExists(db *gorm.DB, username string) error {
 	users, _ := u.repo.DynamicQuery(db, map[string]string{"username": username})
 	if len(users) > 0 {
 		return errors.New("username already exists")
