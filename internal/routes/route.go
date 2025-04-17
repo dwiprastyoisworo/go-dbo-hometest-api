@@ -6,6 +6,7 @@ import (
 	"github.com/dwiprastyoisworo/go-dbo-hometest-api/internal/repositories"
 	"github.com/dwiprastyoisworo/go-dbo-hometest-api/internal/services"
 	"github.com/dwiprastyoisworo/go-dbo-hometest-api/lib/config"
+	"github.com/dwiprastyoisworo/go-dbo-hometest-api/lib/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
@@ -39,7 +40,7 @@ func (r *Route) userRouteInit() {
 }
 
 func (r *Route) customerRouteInit() {
-	group := r.ctx.Group("/customer")
+	group := r.ctx.Group("/customer", middlewares.JWTMiddleware(r.cfg.App.JwtSecret))
 	genericCustomerRepo := repositories.NewRepository[models.Customer]()
 	customerService := services.NewCustomerService(genericCustomerRepo, r.validator, r.db, r.cfg)
 	customerController := controllers.NewCustomerController(customerService)
@@ -52,7 +53,7 @@ func (r *Route) customerRouteInit() {
 }
 
 func (r *Route) orderRouteInit() {
-	group := r.ctx.Group("/order")
+	group := r.ctx.Group("/order", middlewares.JWTMiddleware(r.cfg.App.JwtSecret))
 	genericOrderRepo := repositories.NewRepository[models.Order]()
 	genericOrderItemRepo := repositories.NewRepository[models.OrderItem]()
 	genericCustomerRepo := repositories.NewRepository[models.Customer]()

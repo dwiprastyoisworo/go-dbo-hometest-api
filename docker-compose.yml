@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d mydatabase"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migration:
+    container_name: go-hometest-migration
+    build:
+      context: .
+      dockerfile: Dockerfile.migration
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./file:/app/file
+    restart: "no"
+
+  api:
+    container_name: go-hometest-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      migration:
+        condition: service_completed_successfully
+    volumes:
+      - ./file:/app/file
+    restart: unless-stopped
+
+volumes:
+  pgdata:

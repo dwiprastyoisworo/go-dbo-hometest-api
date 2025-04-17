@@ -9,3 +9,4 @@ migrate:
 # Menjalankan rollback migrasi (down)
 rollback:
 	go run cmd/migration/*.go -type=rollback
+

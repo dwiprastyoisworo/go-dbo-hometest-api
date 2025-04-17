@@ -7,10 +7,10 @@
     "log-level": "debug",
     "is-development": true,
     "jwt-secret" : "12345",
-    "jwy-expired" : "3"
+    "jwt-expired" : "3"
   },
   "postgres": {
-    "host": "localhost",
+    "host": "postgres-db",
     "port": 5432,
     "database": "mydatabase",
     "username": "root",

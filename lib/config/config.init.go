@@ -10,7 +10,7 @@ type App struct {
 	LogLevel      string `json:"LogLevel" mapstructure:"log-level"`
 	IsDevelopment bool   `json:"IsDevelopment" mapstructure:"is-development"`
 	JwtSecret     string `json:"JwtSecret" mapstructure:"jwt-secret"`
-	JwtExpires    int64  `json:"JwtExpires" mapstructure:"jwt-expires"`
+	JwtExpires    int64  `json:"JwtExpires" mapstructure:"jwt-expired"`
 }
 
 type Postgres struct {
